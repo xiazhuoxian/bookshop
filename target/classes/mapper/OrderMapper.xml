@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookshop.dao.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.bookshop.beans.OrderInfo">
+        <id property="orderid" column="orderid"/>
+        <result property="state" column="state"/>
+        <result property="quantity" column="quantity"/>
+        <result property="time" column="time"/>
+        <result property="evaluate" column="evaluate"/>
+        <association property="userinfo" javaType="com.bookshop.beans.Userinfo">
+            <id property="userid" column="userid"/>
+            <result property="username" column="username"/>
+            <result property="password" column="password"/>
+            <result property="location" column="location"/>
+            <result property="phone" column="phone"/>
+        </association>
+        <association property="book" javaType="com.bookshop.beans.Book">
+            <id property="id" column="id"/>
+            <result property="author" column="author"/>
+            <result property="title" column="title"/>
+            <result property="price" column="price"/>
+            <result property="publicationdate" column="publicationdate"/>
+            <result property="salesvolume" column="salesvolume"/>
+            <result property="address" column="address"/>
+            <result property="remark" column="remark"/>
+            <result property="picture" column="picture"/>
+        </association>
+    </resultMap>
+
+    <select id="queryOrderByUserId" resultMap="orderResultMap" parameterType="com.bookshop.beans.Userinfo">
+        select o.orderid,o.userid,o.bookid,o.state,o.quantity,o.time,o.evaluate,
+                u.userid,u.username,u.password,u.location,u.phone,
+                b.id,b.author,b.title,b.price,b.publicationdate,b.salesvolume,b.address,b.remark,b.picture
+        from orderinfo o,userinfo u,book b
+        where o.userid=#{userid} and u.userid=o.userid and b.id=o.bookid
+    </select>
+
+    <update id="addOrderQuantity" parameterType="com.bookshop.beans.OrderInfo">
+        <bind name="q" value="quantity+1"></bind>
+        update orderinfo set quantity=#{q} where orderid=#{orderid}
+    </update>
+
+    <update id="reduceOrderQuantity" parameterType="com.bookshop.beans.OrderInfo">
+        <bind name="q" value="quantity-1"></bind>
+        update orderinfo set quantity = #{q} where orderid = #{orderid}
+    </update>
+
+    <delete id="deleteOrder" parameterType="com.bookshop.beans.OrderInfo">
+        delete from orderinfo where orderid = #{orderid}
+    </delete>
+    
+    <insert id="addToCart" parameterType="com.bookshop.beans.OrderInfo">
+        insert into orderinfo (userid,bookid,state,quantity) values (#{userinfo.userid},#{book.id},1,#{quantity})
+    </insert>
+
+    <select id="queryOrderByOrderid" resultMap="orderResultMap" parameterType="int">
+        select o.orderid,o.userid,o.bookid,o.state,o.quantity,o.time,o.evaluate,
+                u.userid,u.username,u.password,u.location,u.phone,
+                b.id,b.author,b.title,b.price,b.publicationdate,b.salesvolume,b.address,b.remark,b.picture
+        from orderinfo o,userinfo u,book b
+        where o.orderid=#{orderid} and u.userid=o.userid and b.id=o.bookid
+    </select>
+
+    <update id="updateOrderState" parameterType="com.bookshop.beans.OrderInfo">
+        update orderinfo set state =#{state} where orderid = #{orderid}
+    </update>
+
+    <insert id="buyNow" parameterType="com.bookshop.beans.OrderInfo">
+        insert into orderinfo (userid,bookid,state,quantity) values (#{userinfo.userid},#{book.id},#{state},#{quantity})
+    </insert>
+</mapper>

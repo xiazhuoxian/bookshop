@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookshop.dao.SearchMapper">
+
+    <select id="paging" parameterType="com.bookshop.beans.SearchResultsPaging" resultType="com.bookshop.beans.Book">
+        <bind name="firstItem" value="(pageNumber-1)*pageSize"></bind>
+        select * from book
+        <where>
+            <if test="queryCondition!=null">
+                remark like CONCAT('%',#{queryCondition},'%')
+            </if>
+        </where>
+        limit #{firstItem},#{pageSize}
+    </select>
+
+    <select id="count" resultType="int" parameterType="com.bookshop.beans.SearchResultsPaging">
+        select COUNT(id) from book
+        <where>
+            <if test="queryCondition!=null">
+                remark like CONCAT('%',#{queryCondition},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="searchBookById" resultType="com.bookshop.beans.Book" parameterType="int">
+        select * from book where id=#{id}
+    </select>
+</mapper>

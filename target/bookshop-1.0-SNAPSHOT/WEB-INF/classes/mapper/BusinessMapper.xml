@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookshop.dao.BusinessMapper">
+
+    <resultMap id="BusinessGoodsResultMap" type="com.bookshop.beans.BusinessGoods">
+        <id property="id" column="id"/>
+        <association property="business" javaType="com.bookshop.beans.Business">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+            <result property="password" column="password"/>
+        </association>
+        <association property="book" javaType="com.bookshop.beans.Book">
+            <id property="id" column="id"/>
+            <result property="author" column="author"/>
+            <result property="title" column="title"/>
+            <result property="price" column="price"/>
+            <result property="publicationdate" column="publicationdate"/>
+            <result property="salesvolume" column="salesvolume"/>
+            <result property="address" column="address"/>
+            <result property="remark" column="remark"/>
+            <result property="picture" column="picture"/>
+        </association>
+    </resultMap>
+
+    <insert id="addGoos" parameterType="com.bookshop.beans.Book">
+        <selectKey keyProperty='id' resultType='int' order='AFTER'  >
+            select LAST_INSERT_ID();
+        </selectKey>
+        insert into book (author,title,price,address,remark,picture) values (#{author},#{title},#{price},#{address},#{remark},#{picture})
+    </insert>
+
+    <insert id="addBusiness" parameterType="com.bookshop.beans.Business">
+        insert into business (username,password) values (#{username},#{password})
+    </insert>
+
+    <select id="checkBusinessByUsername" parameterType="String" resultType="com.bookshop.beans.Business">
+        select * from business where username = #{username}
+    </select>
+
+    <select id="queryBusinessGoodsByBusinessId" resultMap="BusinessGoodsResultMap" parameterType="com.bookshop.beans.Business">
+        select o.id,o.businessid,o.bookid,
+                u.id,u.username,u.password,
+                b.id,b.author,b.title,b.price,b.publicationdate,b.salesvolume,b.address,b.remark,b.picture
+        from businessgoods o,business u,book b
+        where o.businessid=#{id} and b.id=o.bookid
+    </select>
+
+    <insert id="addBusinessGoods" parameterType="com.bookshop.beans.BusinessGoods">
+        insert into businessgoods (businessid,bookid) values (#{businessid},#{bookid})
+    </insert>
+
+    <delete id="deleteBusinessGoodsById" parameterType="int">
+        delete from businessgoods where id=#{id}
+    </delete>
+
+    <delete id="deleteBookById" parameterType="int">
+        delete from book where id=#{id}
+    </delete>
+
+</mapper>
