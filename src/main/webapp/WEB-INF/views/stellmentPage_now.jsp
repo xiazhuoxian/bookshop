@@ -138,9 +138,10 @@
                         <span>${quantity}</span>
                     </div>
                     <div class="col-2">
-                        <span>${totalPrice}</span>
+                        <span>${totalPrice}aaaa</span>
                     </div>
                 </div>
+            <hr style="height:1px;border:none;border-top:1px dashed lightslategrey;" />
             <hr style="height:1px;border:none;border-top:1px dashed lightslategrey;" />
         </div>
     </div>
