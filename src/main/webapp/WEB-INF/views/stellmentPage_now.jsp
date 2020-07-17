@@ -182,7 +182,7 @@
                 <button onclick="$.return()"
                         type="button" class="btn btn-outline-info">返回</button>
                 <button onclick="$.pay(${totalPrice},${user.account.balance},${b.id},${quantity})"
-                        type="button" class="btn btn-outline-info">提交订单</button>
+                        type="button" class="btn btn-outline-info">提交订单sssssssssss</button>
             </div>
         </div>
     </div>
